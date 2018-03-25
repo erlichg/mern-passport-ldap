@@ -22,7 +22,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // react-router setup with code-splitting
 // More info: http://blog.mxstbr.com/2016/01/react-apps-with-pages/
-export default (
+export default ([
   <Route path="/" component={App}>
     <IndexRoute
       getComponent={(nextState, cb) => {
@@ -39,5 +39,13 @@ export default (
         });
       }}
     />
-  </Route>
-);
+  </Route>,
+  <Route
+    path="/login"
+    getComponent={(nextState, cb) => {
+      require.ensure([], require => {
+        cb(null, require('./modules/Login/pages/LoginPage/LoginPage').default);
+      });
+    }}
+  />,
+]);

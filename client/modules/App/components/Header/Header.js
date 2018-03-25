@@ -1,26 +1,51 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { Link } from 'react-router';
 import { FormattedMessage } from 'react-intl';
+import Navigation from '../Navigation/Navigation';
+import logoUrl from './xtremio.png';
+import logoUrl2x from './xtremioX2.png';
+import PropTypes from 'prop-types';
 
 // Import Style
 import styles from './Header.css';
 
 export function Header(props, context) {
-  const languageNodes = props.intl.enabledLanguages.map(
-    lang => <li key={lang} onClick={() => props.switchLanguage(lang)} className={lang === props.intl.locale ? styles.selected : ''}>{lang}</li>
-  );
-
   return (
     <div className={styles.header}>
-      <div className={styles['language-switcher']}>
-        <ul>
-          <li><FormattedMessage id="switchLanguage" /></li>
-          {languageNodes}
-        </ul>
+      <div className={styles.root}>
+        <div className={styles.container}>
+          {props.isLoggedIn ? <Navigation /> : null}
+          <Link
+            onClick={e => {
+              if (!props.isLoggedIn) {
+                e.preventDefault();
+              }
+            }} className={styles.brand} to="/"
+          >
+            <img
+              src={logoUrl}
+              srcSet={`${logoUrl2x} 2x`}
+              width="38"
+              height="38"
+              alt="XtremIO"
+              className={styles.brandImg}
+            />
+            <span className={styles.brandTxt}>XtremIO</span>
+          </Link>
+          <div className={styles.banner}>
+            <h1 className={styles.bannerTitle}>Support roster</h1>
+          </div>
+        </div>
       </div>
       <div className={styles.content}>
         <h1 className={styles['site-title']}>
-          <Link to="/" ><FormattedMessage id="siteTitle" /></Link>
+          <Link
+            onClick={e => {
+              if (!props.isLoggedIn) {
+                e.preventDefault();
+              }
+            }} to="/"
+          ><FormattedMessage id="siteTitle" /></Link>
         </h1>
         {
           context.router.isActive('/', true)
@@ -40,6 +65,7 @@ Header.propTypes = {
   toggleAddPost: PropTypes.func.isRequired,
   switchLanguage: PropTypes.func.isRequired,
   intl: PropTypes.object.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
 };
 
 export default Header;

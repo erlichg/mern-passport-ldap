@@ -52,6 +52,7 @@ export class App extends Component {
             switchLanguage={lang => this.props.dispatch(switchLanguage(lang))}
             intl={this.props.intl}
             toggleAddPost={this.toggleAddPostSection}
+            isLoggedIn
           />
           <div className={styles.container}>
             {this.props.children}

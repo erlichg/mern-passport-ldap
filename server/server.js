@@ -4,6 +4,9 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import path from 'path';
 import IntlWrapper from '../client/modules/Intl/IntlWrapper';
+import session from 'express-session';
+import passport from 'passport';
+import ActiveDirectory from 'activedirectory';
 
 // Webpack Requirements
 import webpack from 'webpack';
@@ -56,10 +59,76 @@ mongoose.connect(serverConfig.mongoURL, (error) => {
 
 // Apply body Parser and server public assets and routes
 app.use(compression());
+app.use(session({ secret: 'cats' }));
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
 app.use('/api', posts);
+app.set('view engine', 'ejs');
+app.use(require('flash')());
+
+//
+// Authentication
+// -----------------------------------------------------------------------------
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+app.post('/login', (req, res) => {
+  const c = {
+    url: serverConfig.auth.ldapUrl,
+    baseDN: serverConfig.auth.baseDN,
+    username: `CORP\\${req.body.username}`,
+    password: req.body.password,
+  };
+  const ad = new ActiveDirectory(c);
+  ad.authenticate(c.username, c.password, (err, auth) => {
+    if (err) {
+      const error = `ERROR: ${JSON.stringify(err)}`;
+      console.error(error);
+      req.flash('error', 'Wrong username or password');
+      return res.redirect('/login');
+    } else if (!auth) {
+      const error = 'Wrong username or password';
+      req.flash('error', error);
+      return res.redirect('/login');
+    }
+    return ad.findUser(req.body.username, (err2, user) => {
+      if (err2) {
+        const error = `ERROR: ${JSON.stringify(err2)}`;
+        console.error(error);
+        req.flash(
+          'error',
+          `Could not find ${req.body.username} in LDAP directory`,
+        );
+        return res.redirect('/login');
+      }
+      return req.logIn(user, err3 => {
+        if (err3) {
+          const error = `ERROR: ${JSON.stringify(err3)}`;
+          console.error(error);
+          req.flash('error', 'Failed to login');
+          return res.redirect('/login');
+        }
+        return res.redirect('/');
+      });
+    });
+  });
+});
+
+
+app.get('/logout', (req, res) => {
+  req.logOut();
+  res.redirect('/login');
+});
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
@@ -108,7 +177,10 @@ const renderError = err => {
 
 // Server Side Rendering based on routes matched by React-router.
 app.use((req, res, next) => {
-  match({ routes, location: req.url }, (err, redirectLocation, renderProps) => {
+  if (!req.isAuthenticated() && req.url !== '/login') {
+    return res.redirect('/login');
+  }
+  return match({ routes, location: req.url }, (err, redirectLocation, renderProps) => {
     if (err) {
       return res.status(500).end(renderError(err));
     }
