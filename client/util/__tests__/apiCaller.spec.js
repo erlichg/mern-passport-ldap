@@ -1,6 +1,7 @@
 import test from 'ava';
-import callApi, { API_URL } from '../apiCaller';
+
 import nock from 'nock';
+import callApi, { API_URL } from '../apiCaller';
 
 test('method defaults to GET', t => {
   const reply = { foo: 'bar' };

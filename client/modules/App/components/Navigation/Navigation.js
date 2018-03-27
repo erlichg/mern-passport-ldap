@@ -1,18 +1,18 @@
 /**
-* React Starter Kit (https://www.reactstarterkit.com/)
-*
-* Copyright © 2014-present Kriasoft, LLC. All rights reserved.
-*
-* This source code is licensed under the MIT license found in the
-* LICENSE.txt file in the root directory of this source tree.
-*/
+ * React Starter Kit (https://www.reactstarterkit.com/)
+ *
+ * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
 
 import React from 'react';
-import s from './Navigation.css';
 import { Link } from 'react-router';
+import s from './Navigation.css';
 
 export function Navigation(props, context) {
-    return (
+  return (
     <div className={s.root} role="navigation">
       <Link className={s.link} to="/users">
         Users

@@ -13,31 +13,44 @@ test('renders the header properly', t => {
     isActive: sinon.stub().returns(true),
   };
   const wrapper = shallow(
-    <Header switchLanguage={() => {}} intl={intlProp} toggleAddPost={() => {}} />,
+    <Header
+      switchLanguage={() => {}}
+      intl={intlProp}
+      toggleAddPost={() => {}}
+    />,
     {
       context: {
         router,
         intl,
       },
-    }
+    },
   );
 
-  t.truthy(wrapper.find('Link').first().containsMatchingElement(<FormattedMessage id="siteTitle" />));
+  t.truthy(
+    wrapper
+      .find('Link')
+      .first()
+      .containsMatchingElement(<FormattedMessage id="siteTitle" />),
+  );
   t.is(wrapper.find('a').length, 1);
 });
 
-test('doesn\'t add post in pages other than home', t => {
+test("doesn't add post in pages other than home", t => {
   const router = {
     isActive: sinon.stub().returns(false),
   };
   const wrapper = shallow(
-    <Header switchLanguage={() => {}} intl={intlProp} toggleAddPost={() => {}} />,
+    <Header
+      switchLanguage={() => {}}
+      intl={intlProp}
+      toggleAddPost={() => {}}
+    />,
     {
       context: {
         router,
         intl,
       },
-    }
+    },
   );
 
   t.is(wrapper.find('a').length, 0);
@@ -49,15 +62,22 @@ test('toggleAddPost called properly', t => {
   };
   const toggleAddPost = sinon.spy();
   const wrapper = shallow(
-    <Header switchLanguage={() => {}} intl={intlProp} toggleAddPost={toggleAddPost} />,
+    <Header
+      switchLanguage={() => {}}
+      intl={intlProp}
+      toggleAddPost={toggleAddPost}
+    />,
     {
       context: {
         router,
         intl,
       },
-    }
+    },
   );
 
-  wrapper.find('a').first().simulate('click');
+  wrapper
+    .find('a')
+    .first()
+    .simulate('click');
   t.truthy(toggleAddPost.calledOnce);
 });

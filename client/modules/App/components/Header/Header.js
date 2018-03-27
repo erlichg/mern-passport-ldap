@@ -10,17 +10,20 @@ import PropTypes from 'prop-types';
 import styles from './Header.css';
 
 export function Header(props, context) {
+  const isMain = context.router.isActive('/', true);
   return (
     <div className={styles.header}>
       <div className={styles.root}>
         <div className={styles.container}>
-          {props.isLoggedIn ? <Navigation /> : null}
+          {isMain ? <Navigation /> : null}
           <Link
             onClick={e => {
-              if (!props.isLoggedIn) {
+              if (!isMain) {
                 e.preventDefault();
               }
-            }} className={styles.brand} to="/"
+            }}
+            className={styles.brand}
+            to="/"
           >
             <img
               src={logoUrl}
@@ -41,17 +44,24 @@ export function Header(props, context) {
         <h1 className={styles['site-title']}>
           <Link
             onClick={e => {
-              if (!props.isLoggedIn) {
+              if (!isMain) {
                 e.preventDefault();
               }
-            }} to="/"
-          ><FormattedMessage id="siteTitle" /></Link>
+            }}
+            to="/"
+          >
+            <FormattedMessage id="siteTitle" />
+          </Link>
         </h1>
-        {
-          context.router.isActive('/', true)
-            ? <a className={styles['add-post-button']} href="#" onClick={props.toggleAddPost}><FormattedMessage id="addPost" /></a>
-            : null
-        }
+        {isMain ? (
+          <button
+            className={styles['add-post-button']}
+            href="#"
+            onClick={props.toggleAddPost}
+          >
+            <FormattedMessage id="addPost" />
+          </button>
+        ) : null}
       </div>
     </div>
   );
@@ -65,7 +75,6 @@ Header.propTypes = {
   toggleAddPost: PropTypes.func.isRequired,
   switchLanguage: PropTypes.func.isRequired,
   intl: PropTypes.object.isRequired,
-  isLoggedIn: PropTypes.bool.isRequired,
 };
 
 export default Header;

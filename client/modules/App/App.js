@@ -1,14 +1,14 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-// Import Style
-import styles from './App.css';
-
 // Import Components
 import Helmet from 'react-helmet';
 import DevTools from './components/DevTools';
-import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
+import { Header } from './components/Header/Header';
+import { Footer } from './components/Footer/Footer';
+
+// Import Style
+import styles from './App.css';
 
 // Import Actions
 import { toggleAddPost } from './AppActions';
@@ -31,7 +31,9 @@ export class App extends Component {
   render() {
     return (
       <div>
-        {this.state.isMounted && !window.devToolsExtension && process.env.NODE_ENV === 'development' && <DevTools />}
+        {this.state.isMounted &&
+          !window.devToolsExtension &&
+          process.env.NODE_ENV === 'development' && <DevTools />}
         <div>
           <Helmet
             title="MERN Starter - Blog App"
@@ -52,11 +54,8 @@ export class App extends Component {
             switchLanguage={lang => this.props.dispatch(switchLanguage(lang))}
             intl={this.props.intl}
             toggleAddPost={this.toggleAddPostSection}
-            isLoggedIn
           />
-          <div className={styles.container}>
-            {this.props.children}
-          </div>
+          <div className={styles.container}>{this.props.children}</div>
           <Footer />
         </div>
       </div>

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
@@ -18,7 +19,9 @@ export function PostDetailPage(props) {
       <Helmet title={props.post.title} />
       <div className={`${styles['single-post']} ${styles['post-detail']}`}>
         <h3 className={styles['post-title']}>{props.post.title}</h3>
-        <p className={styles['author-name']}><FormattedMessage id="by" /> {props.post.name}</p>
+        <p className={styles['author-name']}>
+          <FormattedMessage id="by" /> {props.post.name}
+        </p>
         <p className={styles['post-desc']}>{props.post.content}</p>
       </div>
     </div>
@@ -26,9 +29,7 @@ export function PostDetailPage(props) {
 }
 
 // Actions required to provide data for this component to render in server side.
-PostDetailPage.need = [params => {
-  return fetchPost(params.cuid);
-}];
+PostDetailPage.need = [params => fetchPost(params.cuid)];
 
 // Retrieve data from store as props
 function mapStateToProps(state, props) {
