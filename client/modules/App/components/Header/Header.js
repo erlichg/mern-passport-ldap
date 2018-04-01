@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { FormattedMessage } from 'react-intl';
-import Navigation from '../Navigation/Navigation';
+import PropTypes from 'prop-types';
+import { Navigation } from '../Navigation/Navigation';
 import logoUrl from './xtremio.png';
 import logoUrl2x from './xtremioX2.png';
-import PropTypes from 'prop-types';
 
 // Import Style
 import styles from './Header.css';
@@ -41,25 +40,13 @@ export function Header(props, context) {
         </div>
       </div>
       <div className={styles.content}>
-        <h1 className={styles['site-title']}>
-          <Link
-            onClick={e => {
-              if (!isMain) {
-                e.preventDefault();
-              }
-            }}
-            to="/"
-          >
-            <FormattedMessage id="siteTitle" />
-          </Link>
-        </h1>
         {isMain ? (
           <button
             className={styles['add-post-button']}
             href="#"
             onClick={props.toggleAddPost}
           >
-            <FormattedMessage id="addPost" />
+            Add post
           </button>
         ) : null}
       </div>
@@ -68,13 +55,11 @@ export function Header(props, context) {
 }
 
 Header.contextTypes = {
-  router: React.PropTypes.object,
+  router: PropTypes.object,
 };
 
 Header.propTypes = {
   toggleAddPost: PropTypes.func.isRequired,
-  switchLanguage: PropTypes.func.isRequired,
-  intl: PropTypes.object.isRequired,
 };
 
 export default Header;

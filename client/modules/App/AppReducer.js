@@ -1,16 +1,16 @@
 // Import Actions
-import { TOGGLE_ADD_POST } from './AppActions';
+import { GET_ERRORS } from './AppActions';
 
 // Initial State
 const initialState = {
-  showAddPost: false,
+  errors: [],
 };
 
 const AppReducer = (state = initialState, action) => {
   switch (action.type) {
-    case TOGGLE_ADD_POST:
+    case GET_ERRORS:
       return {
-        showAddPost: !state.showAddPost,
+        errors: state.errors,
       };
 
     default:
@@ -21,7 +21,7 @@ const AppReducer = (state = initialState, action) => {
 /* Selectors */
 
 // Get showAddPost
-export const getShowAddPost = state => state.app.showAddPost;
+export const getErrors = state => state.app.errors;
 
 // Export Reducer
 export default AppReducer;

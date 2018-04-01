@@ -21,14 +21,13 @@ import Helmet from 'react-helmet';
 
 // Import required modules
 import routes from '../client/routes';
-import { fetchComponentData } from './util/fetchData';
+import fetchComponentData from './util/fetchData';
 import posts from './routes/post.routes';
 import dummyData from './dummyData';
 import serverConfig from './config';
 
-import { configureStore } from '../client/store';
+import configureStore from '../client/store';
 import config from '../webpack.config.dev';
-import { IntlWrapper } from '../client/modules/Intl/IntlWrapper';
 
 // Initialize the Express App
 const app = new Express();
@@ -68,9 +67,8 @@ app.use(compression());
 app.use(session({ secret: 'cats' }));
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
-app.use(Express.static(path.resolve(__dirname, '../dist/client')));
+app.use(Express.static(path.resolve(__dirname, '../node_modules')));
 app.use('/api', posts);
-app.set('view engine', 'ejs');
 app.use(require('flash')());
 
 //
@@ -161,7 +159,7 @@ const renderFullPage = (html, initialState) => {
             ? `<link rel='stylesheet' href='${assetsManifest['/app.css']}' />`
             : ''
         }
-        <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'/>
+        <link href='/bootstrap/dist/css/bootstrap.min.css' rel='stylesheet' type='text/css'/>
         <link rel="shortcut icon" href="http://res.cloudinary.com/hashnode/image/upload/v1455629445/static_imgs/mern/mern-favicon-circle-fill.png" type="image/png" />
       </head>
       <body>
@@ -221,7 +219,7 @@ app.use((req, res, next) => {
         return next();
       }
 
-      const store = configureStore();
+      const store = configureStore({ app: { errors: res.locals.flash } });
 
       return fetchComponentData(
         store,
@@ -231,9 +229,7 @@ app.use((req, res, next) => {
         .then(() => {
           const initialView = renderToString(
             <Provider store={store}>
-              <IntlWrapper>
-                <RouterContext {...renderProps} />
-              </IntlWrapper>
+              <RouterContext {...renderProps} />
             </Provider>,
           );
           const finalState = store.getState();
